@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iPOJO>
+	<instance component="de.berlios.vch.download.mms.MmsDownloadFactory" name="vch.download.mms.factory" />
+</iPOJO>
