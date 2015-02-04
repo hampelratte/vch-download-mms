@@ -218,9 +218,10 @@ public class MmsDownload extends AbstractDownload implements MMSMessageListener,
 
         if (mmspacket instanceof MMSHeaderPacket) {
             hp = (MMSHeaderPacket) mmspacket;
+            ASFInputStream asfin = null;
             try {
                 ByteArrayInputStream bin = new ByteArrayInputStream(hp.getData());
-                ASFInputStream asfin = new ASFInputStream(bin);
+                asfin = new ASFInputStream(bin);
                 ASFToplevelHeader asfHeader = (ASFToplevelHeader) asfin.readASFObject();
                 logger.log(LogService.LOG_DEBUG, "ASF header: " + asfHeader);
                 ASFFilePropertiesObject fileprops = (ASFFilePropertiesObject) asfHeader.getNestedHeader(ASFFilePropertiesObject.class);
@@ -232,6 +233,14 @@ public class MmsDownload extends AbstractDownload implements MMSMessageListener,
                 }
             } catch (Exception e) {
                 logger.log(LogService.LOG_WARNING, "Ignoring unknown ASF header object", e);
+            } finally {
+            	if(asfin != null) {
+            		try {
+						asfin.close();
+					} catch (IOException e) {
+						logger.log(LogService.LOG_WARNING, "Couldn't close ASF input stream", e);
+					}
+            	}
             }
 
             // if the download supports pausing, we just have to
